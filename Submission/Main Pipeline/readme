@@ -1,0 +1,199 @@
+# Unified Actor Extraction and Targeted Aspect-based Sentiment Pipeline for Multilingual News Corpora.
+
+A pipeline for analyzing geopolitical narratives across multilingual news sources. It scrapes articles, resolves coreferences, translates non-English text, extracts named entities, and runs aspect-based sentiment analysis (ABSA) — then visualizes the results to reveal differences in media framing between sources.
+
+---
+
+## Features
+
+- **Article scraping** — Fetches articles from a list of URLs using newspaper4k library
+- **Translation** — Translates non-English articles to English using Meta's NLLB-200 model
+- **Coreference resolution** — Uses `fastcoref` to resolve pronouns before entity extraction (e.g. "He said..." → "Putin said...")
+- **Named entity recognition** — Extracts `PERSON`, `ORG`, and `GPE` entities via spaCy's transformer pipeline
+- **Aspect-based sentiment analysis (ASC)** — Runs per-entity sentiment classification using PyABSA
+- **SQLite storage** — Persists all scraped articles and entity results for reproducibility
+- **Rerun support** — Skip already-scraped articles and resume interrupted runs
+- **Visualizations** — Generates a suite of charts comparing English and Russian media coverage
+
+---
+
+## Requirements
+
+### System
+- Python 3.9+
+- CUDA-capable GPU recommended (CPU supported but slow)
+
+### Python Dependencies
+
+```bash
+pip install torch transformers spacy fastcoref pyabsa newspaper3k requests pandas matplotlib seaborn
+python -m spacy download en_core_web_trf
+```
+A detailed list of all of the required packages to run the pipeline can be found in the requirements.txt file. It is reccomended to set up a virtual enviroment to simplify dependency managment.
+
+---
+
+## Input Format
+
+The pipeline expects two CSV files, these can be of any two seperate languages, each with a `URL` column:
+
+Exmaple:
+
+**`links_en.csv`**
+```
+URL
+https://www.bbc.com/news/article-1
+https://www.reuters.com/article-2
+```
+
+**`links_ru.csv`**
+```
+URL
+https://www.rt.com/news/article-1
+https://tass.ru/article-2
+```
+While The URL column is required for the pipeline to run, an additional source field exists in the curated corpus to help identify the source of the article.
+
+---
+
+## Usage
+
+### Basic (using default CSV paths)
+```bash
+python main.py
+```
+
+### Custom CSV paths
+```bash
+python main.py --source1-csv /data/english_urls.csv --source2-csv /data/russian_urls.csv
+```
+
+### Resume an interrupted run (skip already-scraped articles)
+```bash
+python main.py --re-run 1
+```
+
+### All options together
+```bash
+python main.py --source1-csv /data/english_urls.csv --source2-csv /data/russian_urls.csv --re-run 1
+```
+
+### CLI Arguments
+
+| Argument | Default | Description |
+|---|---|---|
+| `--source1-csv` | `links_en.csv` | Path to the source1 article URLs CSV |
+| `--source2-csv` | `links_ru.csv` | Path to the source2 article URLs CSV |
+| `--re-run` | `0` | Set to `1` to skip already-scraped articles and preserve existing data |
+
+---
+
+## Pipeline Overview
+
+```
+CSV files (URLs)
+      │
+      ▼
+ Scrape Articles          ← newspaper4k + requests
+      │
+      ▼
+ Translate (if Russian)   ← facebook/nllb-200-distilled-600M
+      │
+      ▼
+ Coreference Resolution   ← fastcoref + spaCy (en_core_web_trf)
+      │
+      ▼
+ Entity Extraction        ← spaCy NER (PERSON, ORG, GPE)
+      │
+      ▼
+ Sentiment Analysis       ← PyABSA (per entity, per sentence)
+      │
+      ▼
+ Store in SQLite          ← articles + article_entities tables
+      │
+      ▼
+ Aggregate & Visualize    ← SQL Queries + matplotlib + seaborn
+```
+
+---
+
+## Database Schema
+
+### `articles`
+| Column | Type | Description |
+|---|---|---|
+| `article_id` | TEXT (PK) | UUID for the article |
+| `url` | TEXT | Source URL |
+| `canonical_domain` | TEXT | Extracted domain (e.g. `bbc.com`) |
+| `title` | TEXT | Article title |
+| `text` | TEXT | Full article body |
+| `publish_date` | TEXT | Publication date (ISO format) |
+| `scrape_timestamp` | TEXT | When the article was scraped |
+| `language` | TEXT | 2-letter language code (`en` or `ru`) |
+| `processed` | INTEGER | `0` = pending, `1` = analysed |
+
+### `article_entities`
+| Column | Type | Description |
+|---|---|---|
+| `article_id` | TEXT (FK) | Links to `articles` |
+| `entity_text` | TEXT | Normalised entity name |
+| `entity_type` | TEXT | `PERSON`, `ORG`, or `GPE` |
+| `sentiment_score` | REAL | Average ABSA confidence score |
+| `dominant_sentiment` | TEXT | Majority sentiment (`Positive`, `Negative`, `Neutral`) |
+| `mention_count` | INTEGER | Number of sentences the entity appears in |
+| `pos_count` | INTEGER | Count of positive sentiment mentions |
+| `neg_count` | INTEGER | Count of negative sentiment mentions |
+| `neu_count` | INTEGER | Count of neutral sentiment mentions |
+
+
+#### Table: `unified_entities_{lang}`
+
+| Column | Type | Description |
+| :--- | :--- | :--- |
+| `entity_text` | TEXT | The normalized name of the entity (e.g., "United Nations", "Vladimir Putin"). |
+| `entity_type` | TEXT | The Spacy NER label (e.g., `PERSON`, `ORG`, or `GPE`). Uses `MAX()` to select the most common designation. |
+| `total_mentions` | INTEGER | Total count of sentences where this entity was identified across all processed articles for the specific language. |
+| `total_pos` | INTEGER | Sum of mentions classified with a **Positive** sentiment. |
+| `total_neg` | INTEGER | Sum of mentions classified with a **Negative** sentiment. |
+| `total_neu` | INTEGER | Sum of mentions classified with a **Neutral** sentiment. |
+| `avg_confidence` | REAL | The mean confidence score (0.0 to 1.0) of the sentiment model predictions for this entity. |
+| `dominant_sentiment` | TEXT | The primary sentiment label (`Positive`, `Negative`, or `Neutral`) determined by which count (`total_pos`, `total_neg`, or `total_neu`) is highest. |
+
+---
+
+### Data Aggregation Logic
+
+The pipeline populates these tables using the following logic:
+
+1.  **Filtering:** Joins the `article_entities` table with the `articles` table to separate data by the `language` field (`en` or `ru`).
+2.  **Aggregation:** Groups by `entity_text` and calculates:
+    * **Frequency:** `SUM()` of individual article mention counts.
+    * **Sentiment:** `SUM()` of counts for each polarity class.
+    * **Reliability:** `AVG()` of the sentiment score/confidence.
+3.  **Label Assignment:** A final update script compares the totals for positive, negative, and neutral mentions to assign the `dominant_sentiment`.
+
+---
+
+## Output Files
+
+
+### Charts
+| File | Description |
+|---|---|
+| `english_sentiment_breakdown_english_trained.png` | Stacked bar: sentiment breakdown of top 20 entities in English sources |
+| `russian_sentiment_breakdown_english_trained.png` | Stacked bar: sentiment breakdown of top 20 entities in Russian sources |
+| `english_discussion_landscape_english_trained.png` | Donut chart: share of entity types (PERSON/ORG/GPE) in English sources |
+| `russian_discussion_landscape_english_trained.png` | Donut chart: share of entity types in Russian sources |
+| `discourse_polarization_english_trained.png` | KDE plot: polarity score distribution, English vs Russian |
+| `english_blind_spots_english_trained.png` | Bar chart: top English entities absent from Russian sources |
+| `russian_blind_spots_english_trained.png` | Bar chart: top Russian entities absent from English sources |
+
+---
+
+## Notes
+
+- Russian articles are translated to English before NER and sentiment analysis, so all sentiment judgements are made in English by an English-trained ABSA model.
+- Entity names are normalised (lowercased, title-cased, with leading "The " stripped) to improve cross-article merging.
+- The `--re-run 1` flag is safe to use after a crash — it preserves the database and only processes articles with `processed = 0`.
+- Only entities with more than 3 total mentions across all articles are included in visualizations.
+- To run different models, the versions of the PyABSA, Transformers and Torch packages might need to be changed, detail versioning information per model can be found the specific checkpoints fast_lsa_t_v2.args.txt file.

@@ -1,0 +1,51 @@
+Entity,Total Mentions,JS Distance (Polarization),KL Divergence,Dominant (RU),Dominant (EN)
+Poland,2934,0.062,0.0155,Negative,Neutral
+Nato,2186,0.0263,0.0028,Neutral,Neutral
+Ukraine,1628,0.0428,0.007,Negative,Negative
+Russia,1621,0.0515,0.0103,Negative,Negative
+Donald Tusk,394,0.0601,0.0145,Neutral,Neutral
+Belarus,361,0.0538,0.0119,Negative,Negative
+Donald Trump,328,0.0905,0.025,Neutral,Neutral
+Warsaw,303,0.1426,0.069,Negative,Neutral
+Us,293,0.1293,0.0573,Neutral,Neutral
+Moscow,267,0.0976,0.0338,Negative,Negative
+Eu,185,0.1424,0.0862,Negative,Neutral
+U.S.,180,0.197,0.1142,Neutral,Neutral
+Kremlin,176,0.0576,0.0129,Negative,Negative
+Putin,161,0.1136,0.0463,Negative,Negative
+Trump,159,0.1575,0.0938,Negative,Negative
+Germany,158,0.0462,0.0085,Positive,Neutral
+Mark Rutte,119,0.1864,0.1366,Neutral,Positive
+United States,117,0.2784,0.2873,Neutral,Positive
+Lublin,111,0.0824,0.0276,Neutral,Neutral
+Lithuania,108,0.1943,0.1533,Neutral,Negative
+Romania,96,0.257,0.2615,Negative,Neutral
+France,95,0.1105,0.0468,Positive,Positive
+Iran,91,0.0087,0.0003,Negative,Negative
+European Union,73,0.0922,0.0334,Neutral,Neutral
+Ministry Of Defence,68,0.3639,2.011,Neutral,Positive
+Reuters,67,0.0156,0.001,Neutral,Neutral
+Andrei Ordash,59,0.0751,0.0208,Neutral,Neutral
+Estonia,59,0.2127,0.1468,Negative,Negative
+Defence,59,0.2144,0.1642,Neutral,Neutral
+Tusk,58,0.1742,0.1042,Neutral,Neutral
+Netherlands,58,0.1366,0.0816,Positive,Positive
+Un,57,0.2681,0.2319,Neutral,Neutral
+Latvia,56,0.4238,0.681,Neutral,Negative
+Defense,55,0.2735,0.223,Neutral,Neutral
+European Commission,53,0.1691,0.101,Neutral,Neutral
+Britain,50,0.4547,0.8964,Negative,Neutral
+Denmark,46,0.112,0.0489,Negative,Positive
+Donald Trump'S,46,0.1564,0.0808,Negative,Negative
+Washington,42,0.1637,0.0861,Neutral,Negative
+Emmanuel Macron,40,0.2421,0.1934,Neutral,Neutral
+Brussels,40,0.3876,0.665,Negative,Neutral
+Dmitry Peskov,40,0.106,0.0426,Negative,Negative
+Israel,37,0.1762,0.1164,Negative,Negative
+Lviv,37,0.0709,0.0205,Negative,Negative
+Hungary,36,0.1285,0.069,Neutral,Neutral
+United Nations,35,0.4357,2.0881,Neutral,Neutral
+Italy,34,0.1134,0.0499,Positive,Positive
+Qatar,31,0.271,0.2685,Negative,Negative
+Telegram,31,0.2235,0.1476,Negative,Negative
+State,31,0.4295,4.4167,Neutral,Neutral

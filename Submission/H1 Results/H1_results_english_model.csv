@@ -1,0 +1,51 @@
+Entity,Total Mentions,JS Distance (Polarization),KL Divergence,Dominant (RU),Dominant (EN)
+Poland,2964,0.0324,0.0045,Neutral,Neutral
+Nato,2334,0.0925,0.0415,Neutral,Neutral
+Russia,1719,0.1333,0.0814,Neutral,Neutral
+Ukraine,1636,0.0466,0.0078,Neutral,Neutral
+Donald Tusk,454,0.1003,0.0601,Neutral,Neutral
+Donald Trump,384,0.1336,0.4249,Neutral,Neutral
+Belarus,373,0.047,0.0099,Neutral,Neutral
+Us,342,0.139,0.3489,Neutral,Neutral
+Warsaw,302,0.142,0.4051,Neutral,Neutral
+Moscow,288,0.0461,0.0088,Neutral,Neutral
+Vladimir Putin,236,0.2594,0.5988,Neutral,Neutral
+Eu,216,0.0459,0.0093,Neutral,Neutral
+Kremlin,172,0.1125,0.1757,Neutral,Neutral
+Trump,172,0.0885,0.0296,Neutral,Neutral
+U.S.,168,0.2915,1.8996,Neutral,Neutral
+Germany,161,0.0907,0.0291,Neutral,Neutral
+Mark Rutte,158,0.0801,0.0267,Neutral,Neutral
+Lithuania,131,0.1443,0.0606,Neutral,Neutral
+France,120,0.0945,0.1796,Neutral,Neutral
+Uk,114,0.1947,0.8781,Neutral,Neutral
+United States,109,0.2052,0.2302,Neutral,Neutral
+Putin,105,0.2227,0.8256,Neutral,Neutral
+Romania,93,0.14,0.4192,Neutral,Neutral
+Ministry Of Defence,91,0.2735,0.223,Neutral,Neutral
+Lublin,84,0.0835,0.1521,Neutral,Neutral
+European Union,80,0.0645,0.0148,Neutral,Neutral
+China,78,0.4226,1.3849,Neutral,Neutral
+Defense,68,0.0014,0.0,Neutral,Neutral
+Brussels,68,0.0001,0.0,Neutral,Neutral
+Estonia,66,0.1277,0.3103,Neutral,Neutral
+Reuters,65,0.1046,0.2571,Neutral,Neutral
+Emmanuel Macron,62,0.131,0.0581,Neutral,Neutral
+Latvia,60,0.002,0.0,Neutral,Neutral
+Hungary,58,0.1358,0.093,Neutral,Neutral
+Tusk,55,0.3002,1.9196,Neutral,Neutral
+Russian Defense Ministry,54,0.1893,0.1051,Neutral,Neutral
+Dmitry Peskov,54,0.119,0.2881,Neutral,Neutral
+Denmark,52,0.0015,0.0,Neutral,Neutral
+Donald Trump'S,51,0.3301,2.4649,Neutral,Neutral
+European Commission,51,0.1486,0.4359,Neutral,Neutral
+State,50,0.2599,0.2006,Neutral,Neutral
+Israel,48,0.1947,0.1111,Neutral,Neutral
+Kaja Kallas,46,0.1802,0.6639,Neutral,Neutral
+Washington,46,0.225,1.0531,Neutral,Neutral
+Netherlands,45,0.0286,0.0032,Neutral,Neutral
+Un Security Council,43,0.0003,0.0,Neutral,Neutral
+Radosław Sikorski,41,0.1209,0.3022,Neutral,Neutral
+Un,39,0.1327,0.3974,Neutral,Neutral
+Lviv,39,0.2064,1.0678,Neutral,Neutral
+Finland,37,0.1725,0.7169,Neutral,Neutral
